@@ -53,4 +53,23 @@ solana airdrop 2 $(solana address -k ./keypair-dev-4.json)
 ```
 
 to send 2 sol to the wallet setted in the provider section above. For blockchain application, computation resources is very precious, like cpu, memory, disk, the program deployer need to pay for these resources to enable blockchain nodes to
-run you program.
+run you program. After setting the provider in Anchor.toml, then we can run the command to deploy the program:
+
+```rs
+anchor deploy
+```
+
+Wait for a monent you may see the message of "deploy success". Now it is time to mention a concept used by solana blockchain that is rent. When we deploy the program to the chain, we need to ask node which holding the program to allocate
+some memory to run the program, the size of memory used by the program is the volumn of the library, the uint of volumn is byte, for example if our compiled hello_world.so is 200 bytes, then we need to pay certain amount of sol for holding 
+it, the fee for this is called rent, we can compute it by using command:
+
+```rs
+solana rent 200
+```
+Then it will computed the money that will deduct from the given wallet setted aboved. For our learning purpose, we wan't care about this, since we can get the fake money by calling solana airdrop, therefore we allocate enough memory for
+our program at once, we can running following command to allocate 20,000 bytes for our program:
+
+```rs
+solana program extend 5uZL9o81FehpUtQrFjNtgZHkW1VAhXCZn5AdvJayhwQP 20000 -u d -k ~/keypair-dev-4.json
+```
+Then the nodes in blockchain will allocate 20000 bytes for the running of our program. Notice we never do this in real production, since we need to pay for every byte we used, we do this only for the convinent of learning.
