@@ -72,4 +72,13 @@ our program at once, we can running following command to allocate 20,000 bytes f
 ```rs
 solana program extend 5uZL9o81FehpUtQrFjNtgZHkW1VAhXCZn5AdvJayhwQP 20000 -u d -k ~/keypair-dev-4.json
 ```
-Then the nodes in blockchain will allocate 20000 bytes for the running of our program. Notice we never do this in real production, since we need to pay for every byte we used, we do this only for the convinent of learning.
+Then the nodes in blockchain will allocate 20000 bytes for the running of our program. Notice we never do this in real production, since we need to pay for every byte we used, we do this only for the convinent of learning. 
+Now let's focus on the logic of code, we need to familiar with onde concept for solana that is account, as we metion the database component in banking service above, we need to allocate memory to for saving code, there is a special entity
+responsible for this which has name program account, and we need to ask nodes to allocate memory for saving data, then we need an entity for this purpose which has name storage account, each acount will map to a wallet, and the money in the
+wallet will deduct for given memory. 
+
+For blockchain application, the most important purpose is managing assets which is represented by tokens, therefore we need an entity responsible for handling tokens such as receiving or sending token, this entity has name token account. 
+Therefore when we say program account, we refer to the program code hoding on the blockchain, when we say storage account we are referring to memory allocated for saving data on the chain, and when we say token account, we are referring 
+for data structure allocated on the chain for holding info about token info.
+
+
