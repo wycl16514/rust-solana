@@ -17,5 +17,40 @@ api endpoint:
 3, decrease_balance, which receive the the token which is used to verify the identity of the user and a number to inidcate the amount need to reduce from the balance.
 
 we also need other kind of service, one is the database service, this service will hold info about the given user, when user call register endpoint, the database service will create a record to save info about the user, such as name,
-sex, and especially the balance info. We also need one service which can be name system program, it is responsible for executing business logic, for example, when api endpoint register is called, the backend service will transfer the
-user name and password to the system program, and the latter will generate a token and ask the endpoint returns the token back to user.
+sex, and especially the balance info. We also need one service which can be name system program, it is responsible managing database resources, when the register endpoint is called, the api service will ask the system program to allocate
+a new record in the database component for holding info about the new user, when the user decide to delete his account, the api endpoint will ask system program to remove the given record.
+
+api endpoint is responsible for executing business logic. For example when the increase_balance endpoint is called, the endpoint will check the identity of the user by looking at the token, then ask the database component to increase the
+number of balance for the given user, when user ask for transfering fund about from his account by calling endpoint of decrease_balance, the endpoint will check the identity of the user by looking at the token and then check the banalce of
+the given user has enough fund or not, if it is, then it will ask database component to reduce given amount from the balance number.
+
+Base on above fundation, we can goto analyze the code in the lib.rs, For the hellow world project, we will going to design a counter, and provide functions to increase , decrease, or set arbitrary value of counter， for different user whill
+have their own couter, user A can only act one its own couter and not allowed to do anything on counter belongs to user B, is this looks like the bank service we mentioned above? When we look at the code in lib.rs, there is a declare_id! with
+a chunk of string, we can take that as the ip address for the restful endpoint we metion above, and the initialize function inside the hello_world module is just like the register endpoint, the context will contain identity like user name 
+and password of given user, and this function will initialize a counter for the given user.
+
+Using "anchor build" will compile the code and there would be a folder with name "target" created, when we look into the folder, in the subfolder of "deploy", we will find a hello_world.so inside, this is the executable we need to deploy 
+to solana blockchain, just like the restful endpoint, all the code in the project is passive which means they don't execute on their own, they need to be called by others. Now let's deploy this barebone app to solana devnet first, the 
+devnet is used for the purpose of designing.
+
+In order to deploy out library to the solana dev blockchain, we need the help of RPC endpoint, solana has its own rpc endpoint for sending our lib to blockchain but at the time of my recording, this endpoint sucks, that is if you use the
+endpoint provided by solana ： https://api.devnet.solana.com， you may likely get the timeout error, since there are too many people using this endpoints, I looking around by using google and find the following endpoint is workable:
+
+https://rpc.ankr.com/solana_devnet
+
+at the time you look at this video, the given endpoint may be sucks too, then you need to look for other endpoint by using google. Now goto Anchor.toml which is located at the root of the project, and go to the provider section change its 
+content as following:
+
+```rs
+[provider]
+cluster = "https://rpc.ankr.com/solana_devnet"
+wallet = "~/keypair-dev-4.json"
+```
+the value for cluster is used to select the rpc endpoint, and the wallet is used to be the deployer of the program, the wallet is just like the banking services provider above. Make sure the wallet has enough fund, you can use command of
+
+```rs
+solana airdrop 2 $(solana address -k ./keypair-dev-4.json)
+```
+
+to send 2 sol to the wallet setted in the provider section above. For blockchain application, computation resources is very precious, like cpu, memory, disk, the program deployer need to pay for these resources to enable blockchain nodes to
+run you program.
