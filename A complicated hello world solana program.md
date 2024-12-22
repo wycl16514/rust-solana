@@ -81,4 +81,8 @@ For blockchain application, the most important purpose is managing assets which 
 Therefore when we say program account, we refer to the program code hoding on the blockchain, when we say storage account we are referring to memory allocated for saving data on the chain, and when we say token account, we are referring 
 for data structure allocated on the chain for holding info about token info.
 
+There is also a system program which play a crucial role, it just like the sytem program we metioned in above, its responsibility is ask blockchain to allocate given size of memory then init that
+block of data according to struct we define, or checking previlege when some action need to act on given chunk of data such as increase the value of given field or transfering token, is very like 
+the system program that allocate data record for new user we metion above.
+
 
